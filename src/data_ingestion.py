@@ -15,3 +15,9 @@ console_handler.setLevel('DEBUG')
 log_file_path = os.path.join(dir,'data_ingestion.log')
 file_handler = logging.FileHandler(log_file_path)
 file_handler.setLevel('DEBUG')
+
+formater = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+
+logger.addHandler(console_handler)
+logger.addHandler(file_handler)
+
