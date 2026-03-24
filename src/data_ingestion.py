@@ -62,3 +62,14 @@ def preprocess(df:pd.DataFrame) -> pd.DataFrame:
     except Exception as e:
         logger.error("Unexpected error raised during data preprocessing %s", e)
         raise
+
+def save_data(train_data:pd.DataFrame, test_data:pd.DataFrame, data_path:str) -> None:
+    try:
+        raw_data_path = os.path.join(data_path,'raw')
+        os.makedirs(raw_data_path,exist_ok=True)
+        train_data.to_csv(os.path.join(raw_data_path,'train.csv'))
+        test_data.to_csv(os.path.join(raw_data_path,'test.csv'))
+        logger.debug("The train and test dataset is created")
+    except Exception as e:
+        logger.debug('Unexpected error occurred during train and test dataset creation')
+        raise
