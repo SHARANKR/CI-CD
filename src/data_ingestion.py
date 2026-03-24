@@ -37,3 +37,15 @@ def load_params(params_path:str) -> dict:
     except Exception as e:
         logger.error('Unexpected error %s', e)
         raise
+    
+def load_data(load_path:str) -> pd.DataFrame:
+    try:
+        df = pd.read_csv(load_path)
+        logger.debug('Data has been loaded %s', load_path)
+        return df
+    except pd.errors.ParserError as e:
+        logger.error('Failed to parse the csv file %s', e)
+        raise
+    except Exception as e:
+        logger.error('Unexpected error raised while loadind data %s', e)
+        raise
