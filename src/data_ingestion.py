@@ -52,7 +52,7 @@ def load_data(load_path:str) -> pd.DataFrame:
     
 def preprocess(df:pd.DataFrame) -> pd.DataFrame:
     try:
-        df.drop(columns = ['Unnamed2','Unnamed3','Unnamed4'],inplace=True)
+        df.drop(columns = ['Unnamed: 2','Unnamed: 3','Unnamed: 4'],inplace=True)
         df.rename(columns = {'v1':'target','v2':'text'},inplace=True)
         logger.debug('Data preprocessing completed')
         return df
@@ -71,5 +71,21 @@ def save_data(train_data:pd.DataFrame, test_data:pd.DataFrame, data_path:str) ->
         test_data.to_csv(os.path.join(raw_data_path,'test.csv'))
         logger.debug("The train and test dataset is created")
     except Exception as e:
-        logger.debug('Unexpected error occurred during train and test dataset creation')
+        logger.debug('Unexpected error occurred during train and test dataset creation %s', e)
         raise
+    
+def main():
+    try:
+        params = load_params(params_path='params.yaml')
+        test_size = params['data_ingestion']['test_size']
+        data_path = 'https://raw.githubusercontent.com/vikashishere/Datasets/main/spam.csv'
+        df = load_data(load_path=data_path)
+        final_df = preprocess(df=df)
+        train_data, test_data = train_test_split(df, test_size=test_size, random_state=2)
+        save_data(train_data, test_data, data_path='./data')
+    except Exception as e:
+        logger.error('Failed to complete the data ingestion process: %s', e)
+        print(f'Error: {e}')
+        
+if __name__ == '__main__':
+    main()
