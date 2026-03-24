@@ -49,3 +49,16 @@ def load_data(load_path:str) -> pd.DataFrame:
     except Exception as e:
         logger.error('Unexpected error raised while loadind data %s', e)
         raise
+    
+def preprocess(df:pd.DataFrame) -> pd.DataFrame:
+    try:
+        df.drop(columns = ['Unnamed2','Unnamed3','Unnamed4'],inplace=True)
+        df.rename(columns = {'v1':'target','v2':'text'},inplace=True)
+        logger.debug('Data preprocessing completed')
+        return df
+    except KeyError as e:
+        logger.error('Missing column in the dataframe %s', e)
+        raise
+    except Exception as e:
+        logger.error("Unexpected error raised during data preprocessing %s", e)
+        raise
