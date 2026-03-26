@@ -30,7 +30,7 @@ def transform_text(text):
     text = text.lower()
     text = nltk.word_tokenize(text)
     text = [word for word in text if word.isalnum()]
-    text = [word for word in text if word not in stopwords.word('English') and word not in string.punctuation]
+    text = [word for word in text if word not in stopwords.words('English') and word not in string.punctuation]
     text = [ps.stem(word) for word in text ]
     return " ".join(text)
 
@@ -54,4 +54,31 @@ def preprocess(df, text_column='text', target_column='target'):
         logger.error('Error during text normalization: %s', e)
         raise
     
+def main(text_column = 'text', target_column = 'target'):
+    try:
+        train_data = pd.read_csv('./data/raw/train.csv')
+        test_data = pd.read_csv('./data/raw/test.csv')
         
+        train_processed_data = preprocess(train_data, text_column, target_column)
+        test_processed_data = preprocess(test_data, text_column, target_column)
+        
+        data_path = os.path.join('./data/raw')
+        os.makedirs(data_path, exist_ok=True)
+        
+        train_processed_data.to_csv(os.path.join(data_path, 'Train_processed_data.csv'), index = False)       
+        test_processed_data.to_csv(os.path.join(data_path, 'Test_processed_data.csv'), index = False)
+        
+        logger.debug('Data_preprocessed')   
+        
+    except FileNotFoundError as e:
+        logger.error('File not found: %s', e)
+        raise
+    except pd.errors.EmptyDataError as e:
+        logger.error('No data found: %s', e)
+        raise
+    except Exception as e:
+        logger.error('Failed to complete the data preprocess %s', e)
+        raise
+    
+if __name__ == '__main__':
+    main()
